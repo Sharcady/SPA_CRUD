@@ -1,24 +1,118 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
-    </div>
-</div>
+﻿@model SPA_CRUD.DAL.Models.ViewModel
+
+@{
+    ViewBag.Title = "List";
+}
+<style>
+    button {
+        background-color: cornflowerblue;
+        color: white;
+        cursor: pointer;
+    }
+
+    .crudBtn {
+        width: 150px;
+        height: 50px;
+        background: url(../../Content/Images/trashCan.png);
+    }
+</style>
+@section Scripts{
+    <script>
+        $("#Add").hide();
+
+
+        function appearFunc() {
+            if ($("#Add").is(":visible")) {
+                $("#Add").hide();
+            } else {
+                $("#Add").show();
+            }
+        }
+
+     
+    </script>
+}
+
+
+@if (Model.Users != null)
+{
+    <button onclick="appearFunc()">Add</button>
+    <table class="table" id="colleagueTable" style="border-radius:10px; margin-top: 20px; text-align:center">
+        <thead style="background-color:#3164a3; color: white; text-align:center; border-radius:10px;">
+
+            <tr>
+                <th style="text-align:center; color:white">
+                    #
+                </th>
+                <th style="text-align:center; color:white">
+                    Username
+                </th>
+
+                <th style="text-align:center;color:white">
+                    Department
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        @using (Html.BeginForm())
+        {
+            foreach (var item in Model.Users)
+            {
+                <tr>
+                    <td style="max-width:400px">
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.UserName
+                    </td>
+                    <td>
+                        <div>
+                            @Model.Departments.First(u => u.Id == item.DepartmentId).Title
+                        </div>
+                    </td>
+                    <td>
+                        <button onclick="editFunc()" id="editBtn">Edit</button>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "crudBtn" })
+
+                    </td>
+                </tr>
+            }
+        }
+
+    </table>
+    
+    
+    using (Html.BeginForm("Add", "Home"))
+    {
+        <div id="Add">
+            <table class="table">
+                <thead> Add new user</thead>
+                <tr>
+                    <td>
+                        Username
+                    </td>
+                    <td>
+                        Department
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input name="username" type="text" placeholder="Insert new name" />
+                    </td>
+                    <td>
+                        <select name="department">
+                            <option>IT</option>
+                            <option>Not IT</option>
+                        </select>
+                    </td>
+
+                </tr>
+            </table>
+            <button type="submit">Submit new employer</button>
+        </div>
+    }
+}
+else
+{
+    <h4 class="lead" style="text-align:center;" id="noRequestsTitle">А где моделька-то?</h4>
+}
